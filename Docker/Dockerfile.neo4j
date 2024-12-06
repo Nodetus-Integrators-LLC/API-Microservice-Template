@@ -1,10 +1,5 @@
-FROM python:3.11-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Dockerfile.neo4j
+FROM neo4j:5.14
+COPY ./init-scripts/neo4j/*.cypher /docker-entrypoint-initdb.d/
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD wget http://localhost:7474 || exit 1
